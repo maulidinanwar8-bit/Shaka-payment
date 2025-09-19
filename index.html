@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2b5876);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            opacity: 0.8;
+        }
+
+        .payment-method {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-method::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: -1;
+            background: linear-gradient(45deg, #00b4db, #0083b0, #00b4db);
+            border-radius: 16px;
+            animation: glowing 1.5s linear infinite;
+        }
+
+        .payment-method h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-method h3 img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .account-number {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-number::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+            border-radius: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        .number {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .an {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .qris-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .qris-title {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .qris-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 15px;
+            border: 3px solid transparent;
+            background: linear-gradient(45deg, #00b4db, #0083b0, #00b4db);
+            background-origin: border-box;
+            box-shadow: 0 0 15px rgba(0, 180, 219, 0.5);
+            padding: 5px;
+            margin: 0 auto;
+        }
+
+        .qris-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .note {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .telegram-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #0088cc, #005580);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+        }
+
+        .telegram-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        @keyframes glowing {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .number {
+                font-size: 16px;
+            }
+            
+            .qris-image {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Shakaātzy Payment</h1>
+            <p>Silakan pilih metode pembayaran di bawah</p>
+        </div>
+        
+        <div class="payment-method">
+            <h3>DANA</h3>
+            <div class="account-number">
+                <span class="number">0895328575953</span>
+                <button class="copy-btn" onclick="copyToClipboard('0895328575953', 'Nomor DANA')">Salin</button>
+            </div>
+            <p class="an">A/N: TF ASAL NOMOR BENAR</p>
+        </div>
+        
+        <div class="payment-method">
+            <h3>GOPAY</h3>
+            <p style="margin-bottom: 10px;">Hanya tersedia dana dan qris</p>
+            <p class="an">A/N: TF ASAL NOMOR BENAR</p>
+        </div>
+        
+        <div class="payment-method">
+            <h3>OVO</h3>
+            <p style="margin-bottom: 10px;">Hanya tersedia dana dan qris</p>
+            <p class="an">A/N: TF ASAL NOMOR BENAR</p>
+        </div>
+        
+        <div class="qris-container">
+            <h3 class="qris-title">QRIS</h3>
+            <div class="qris-image">
+                <img src="https://files.catbox.moe/t7wai4.png" alt="QR Code">
+            </div>
+            <div class="note">
+                NOTE! : DOWNLOAD PNG TERSEBUT/SS
+            </div>
+        </div>
+        
+        <a href="https://t.me/AlexandroShakaa" target="_blank" class="telegram-btn">
+            <svg class="telegram-icon" viewBox="0 0 24 24" fill="white">
+                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+            </svg>
+            Channel Telegram
+        </a>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function copyToClipboard(text, method) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${method} berhasil disalin!`);
+            }).catch(err => {
+                showToast('Gagal menyalin teks');
+                console.error('Error copying text: ', err);
+            });
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
